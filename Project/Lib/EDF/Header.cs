@@ -198,7 +198,7 @@ namespace SharpLib.EuropeanDataFormat
             public VariableLengthString Reserveds { get; private set; } = new VariableLengthString(HeaderItems.SignalsReserved);
         }
 
-        public Signal Signals = new Header.Signal();
+        public Signal Signals = new Signal();
 
         public Header() { }
 

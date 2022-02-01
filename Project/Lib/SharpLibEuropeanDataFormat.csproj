@@ -60,10 +60,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EDF\AnnotationSignal.cs" />
     <Compile Include="EDF\File.cs" />
     <Compile Include="EDF\Header.cs" />
     <Compile Include="EDF\Reader.cs" />
-    <Compile Include="EDF\Signal.cs" />
+    <Compile Include="EDF\BaseSignal.cs" />
     <Compile Include="EDF\Writer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

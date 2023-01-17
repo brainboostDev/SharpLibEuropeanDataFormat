@@ -2,21 +2,21 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.IO;
+using System.IO.Abstractions;
 using System.Text;
 
 namespace SharpLib.EuropeanDataFormat
 {
-    class Reader : BinaryReader
+    class Reader : System.IO.BinaryReader
     {
-        public Reader(FileStream fs) : base(fs) { }
-        public Reader(byte[] edfBytes) : base(new MemoryStream(edfBytes)) { }
+        public Reader(FileSystemStream fs) : base(fs) { }
+        public Reader(byte[] edfBytes) : base(new System.IO.MemoryStream(edfBytes)) { }
 
         public Header ReadHeader()
         {
             Header h = new Header();
 
-            this.BaseStream.Seek(0, SeekOrigin.Begin);
+            this.BaseStream.Seek(0, System.IO.SeekOrigin.Begin);
 
             // Fixed size header
             h.Version.Value = ReadAscii(HeaderItems.Version);
@@ -86,7 +86,7 @@ namespace SharpLib.EuropeanDataFormat
         public void ReadSignal(Header aHeader, Signal aSignal)
         {
             // Make sure we start just after our header
-            this.BaseStream.Seek(aHeader.SizeInBytes.Value, SeekOrigin.Begin);
+            this.BaseStream.Seek(aHeader.SizeInBytes.Value, System.IO.SeekOrigin.Begin);
 
             aSignal.Samples.Clear();
             // Compute capacity thus pre-allocating memory to avoid resizing
@@ -164,7 +164,7 @@ namespace SharpLib.EuropeanDataFormat
         /// <param name="aSampleCount"></param>
         private void SkipSignalSamples(int aSampleCount)
         {
-            BaseStream.Seek(aSampleCount * sizeof(short), SeekOrigin.Current);
+            BaseStream.Seek(aSampleCount * sizeof(short), System.IO.SeekOrigin.Current);
         }
 
 
@@ -180,7 +180,7 @@ namespace SharpLib.EuropeanDataFormat
             var samples = new List<short>();
             int countBytesRead = 0;
 
-            this.BaseStream.Seek(startPosition, SeekOrigin.Begin);
+            this.BaseStream.Seek(startPosition, System.IO.SeekOrigin.Begin);
 
             while (countBytesRead < numberOfSamples * 2) //2 bytes per integer
             {

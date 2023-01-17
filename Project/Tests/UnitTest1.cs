@@ -2,6 +2,7 @@
 using SharpLib.EuropeanDataFormat;
 using System.Linq;
 using System.Collections.Generic;
+using System.IO.Abstractions.TestingHelpers;
 
 namespace EDFSharpTests
 {
@@ -11,6 +12,7 @@ namespace EDFSharpTests
         [TestMethod]
         public void Test_WriteReadEDF_ShouldReturnSameData()
         {
+            MockFileSystem mockFileSystem = new MockFileSystem();
             //Write an EDF file with two signals then read it and check the data is correct
             var edf1 = new File();
 
@@ -58,7 +60,7 @@ namespace EDFSharpTests
 
             string edfFilePath = @"C:\temp\test1.EDF";
 
-            edf1.Save(edfFilePath);
+            edf1.Save(edfFilePath, mockFileSystem.File);
 
             //Read the file back
             var edf2 = new File(edfFilePath);

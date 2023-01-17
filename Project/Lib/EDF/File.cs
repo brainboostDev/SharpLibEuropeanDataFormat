@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -15,9 +15,9 @@ namespace SharpLib.EuropeanDataFormat
         private Reader iReader;
 
         public File() { AnnotationSignals = new List<AnnotationSignal>(); }
-        public File(string edfFilePath)
+        public File(string edfFilePath, IFile file)
         {
-            ReadAll(edfFilePath);
+            ReadAll(edfFilePath, file);
         }
 
         public File(byte[] edfBytes)
@@ -51,10 +51,10 @@ namespace SharpLib.EuropeanDataFormat
         /// Open the given EDF file, read its header and allocate corresponding Signal objects.
         /// </summary>
         /// <param name="edfFilePath"></param>
-        public void Open(string edfFilePath)
+        public void Open(string edfFilePath, IFile file)
         {
             // Open file
-            iReader = new Reader(System.IO.File.Open(edfFilePath, FileMode.Open, FileAccess.Read, FileShare.Read));
+            iReader = new Reader(file.Open(edfFilePath, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.Read));
             // Read headers
             Header = iReader.ReadHeader();
             // Allocate signals
@@ -91,9 +91,9 @@ namespace SharpLib.EuropeanDataFormat
         /// Read the whole file into memory
         /// </summary>
         /// <param name="edfFilePath"></param>
-        public void ReadAll(string edfFilePath)
+        public void ReadAll(string edfFilePath, IFile file)
         {
-            using (var reader = new Reader(System.IO.File.Open(edfFilePath, FileMode.Open, FileAccess.Read, FileShare.Read)))
+            using (var reader = new Reader(file.Open(edfFilePath, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.Read)))
             {
                 Header = reader.ReadHeader();
                 Signals = reader.ReadSignals(Header);
@@ -114,11 +114,11 @@ namespace SharpLib.EuropeanDataFormat
             }
         }
 
-        public void Save(string edfFilePath)
+        public void Save(string edfFilePath, IFile file)
         {
             if (Header == null) return;
 
-            using (var writer = new Writer(System.IO.File.Open(edfFilePath, FileMode.Create)))
+            using (var writer = new Writer(file.Open(edfFilePath, System.IO.FileMode.Create)))
             {
                 writer.WriteEDF(this, edfFilePath);
             }

@@ -1,16 +1,16 @@
 ﻿//#define TRACE_BYTES
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.IO.Abstractions;
 using System.Text;
 using System.Linq;
 using System.Diagnostics;
 
 namespace SharpLib.EuropeanDataFormat
 {
-    class Writer : BinaryWriter
+    class Writer : System.IO.BinaryWriter
     {
-        public Writer(FileStream fs) : base(fs) { }
+        public Writer(FileSystemStream fs) : base(fs) { }
 
         public void WriteEDF(File edf, string edfFilePath)
         {
@@ -85,7 +85,7 @@ namespace SharpLib.EuropeanDataFormat
             WriteSignals(edf);
 
             Close();
-            Console.WriteLine("File size: " + System.IO.File.ReadAllBytes(edfFilePath).Length);
+
         }
 
 
